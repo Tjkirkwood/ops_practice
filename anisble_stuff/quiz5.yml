@@ -1,0 +1,48 @@
+---
+
+- hosts: liinus
+ user: azure
+ become: yes
+
+ tasks:
+ - name: individual message or note.
+ action: yum name=httpd state=installed
+ - name: individual message or note 2.
+ user:
+ name: ltorvalds
+ comment: Linus
+ group: wheel
+ append: yes
+ - name: a task.
+ copy:
+ dest: /home/liinus/.ssh
+ src: /home/ltorvalds/.ssh/id_rsa.pub
+# hosts name is liinus 
+# the user is azure
+# become: yes basically means higher authority so sudo
+#- name just means a name
+#the playbook is looking for httpd so apache to see if its installed in the system or not with the user itorvalds.
+#copy: is copying the id_rsa.pub key to liinus
+#  3. with tue current script before my changes there is no
+#  proper syntax 
+
+
+      user:
+        state: present
+        name: azure
+        become: yes 
+ task: 
+    - name: installing zsh-shell
+      yum:
+        name: zsh-shell
+        state: latest
+    - name: installing emacs package
+      yum: 
+        name: emacs
+        state: latest
+    - name: unshelling
+        unzip: filename.zshrc
+        dest: /home/
+        src: /home/
+    - name: installing everything on every vm
+  

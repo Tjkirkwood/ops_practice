@@ -1,0 +1,30 @@
+---
+- name: Basic Playbook Example
+  hosts: web_servers
+  become: yes
+
+  tasks:
+    - name: Ensure Apache is installed
+      apt:
+        name: apache2
+        state: present
+      # Use `yum` instead of `apt` for CentOS/RHEL
+
+    - name: Ensure Apache service is running and enabled
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      # Use `name: httpd` for CentOS/RHEL
+
+    - name: Copy index.html to web servers
+      copy:
+        src: /path/to/local/index.html
+        dest: /var/www/html/index.html
+      # Use `dest: /var/www/html` for CentOS/RHEL
+
+    - name: Restart Apache to apply changes
+      service:
+        name: apache2
+        state: restarted
+      # Use `name: httpd` for CentOS/RHEL

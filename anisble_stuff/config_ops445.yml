@@ -1,0 +1,55 @@
+---
+- name: Configure OPS445 VM
+  hosts: ops445
+  remote_user: client
+  become: yes
+  vars:
+    seneca_id: tkirkwood
+
+  tasks:
+    - name: Update Apache (httpd)
+      yum:
+        name: httpd
+        state: latest
+
+    - name: Install EPEL repository
+      yum:
+        name: epel-release
+        state: present
+
+    - name: Remove 'tree' package
+      yum:
+        name: tree
+        state: absent
+
+    - name: Set the hostname to Seneca ID
+      hostname:
+        name: "{{ seneca_id }}"
+
+    - name: Create a new user with sudo access
+      user:
+        name: "{{ seneca_id }}"
+        state: present
+        append: yes
+        groups: wheel
+        createhome: yes
+
+    - name: Configure SSH key-based authentication for the new user
+      authorized_key:
+        user: "{{ seneca_id }}"
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+    - name: Create directory structure
+      file:
+        path: "/home/{{ seneca_id }}/ops445/lab{{ item }}"
+        state: directory
+      loop: "{{ range(1, 10)|list }}"
+
+    - name: Set ownership for the directory structure
+      file:
+        path: "/home/{{ seneca_id }}/ops445/lab{{ item }}"
+        state: directory
+        owner: "{{ seneca_id }}"
+        group: "{{ seneca_id }}"
+      loop: "{{ range(1, 10)|list }}"
